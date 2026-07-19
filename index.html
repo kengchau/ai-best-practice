@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="10 design principles for agent-ergonomic CLI — validated across 915 runs">
+    <title>AXI: Agent eXperience Interface — AI Best Practice</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;510;590;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --bg: #faf9f7;
+        --bg-surface: #ffffff;
+        --text-primary: #1a1a18;
+        --text-secondary: #4a4a48;
+        --text-muted: #8a8a88;
+        --border: #e2e1df;
+        --border-subtle: #f0efed;
+        --accent: #6366f1;
+        --accent-bg: rgba(99,102,241,0.06);
+        --accent-border: rgba(99,102,241,0.15);
+      }
+      * { box-sizing: border-box; margin: 0; padding: 0; }
+      body {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        background: var(--bg);
+        color: var(--text-primary);
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .page-wrap {
+        max-width: 920px;
+        margin: 0 auto;
+        padding: 2rem 1.5rem 4rem;
+      }
+      @media (min-width: 768px) {
+        .page-wrap { padding: 3rem 2rem 5rem; }
+      }
+      main {
+        background: var(--bg-surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 2rem 1.5rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+      }
+      @media (min-width: 768px) {
+        main { padding: 2.5rem 2.5rem; }
+      }
+      footer {
+        text-align: center;
+        padding: 2rem 0 0;
+        font-size: 0.82rem;
+        color: var(--text-muted);
+      }
+      footer a { color: var(--accent); }
+      .axi-container { max-width: 880px; margin: 0 auto; }
+      .axi-container h1 { font-size: 2rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+      .axi-container .subtitle { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem; }
+      .axi-container .byline { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2.5rem; }
+      .axi-container .byline a { color: var(--accent); }
+      .axi-container h2 { font-size: 1.35rem; font-weight: 600; color: var(--text-primary); margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+      .axi-lead { color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+      .axi-section-text { color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+      .axi-category { display: inline-block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 10px; border-radius: 4px; margin-bottom: 1.25rem; }
+      .axi-cat-efficiency { background: rgba(35,131,226,0.1); color: #1b6fbf; }
+      .axi-cat-robustness { background: rgba(45,170,120,0.1); color: #2d9a78; }
+      .axi-cat-discoverability { background: rgba(180,90,200,0.1); color: #8b3fa0; }
+      .axi-principle { margin-bottom: 1.75rem; }
+      .axi-principle h3 { font-size: 1.1rem; font-weight: 590; color: var(--text-primary); margin-bottom: 0.35rem; }
+      .axi-principle p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.5rem; }
+      .axi-container pre { background: #f0f0ee; border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1rem; font-size: 0.82rem; line-height: 1.5; overflow-x: auto; color: #1a1a18; margin: 0.5rem 0 1rem 0; }
+      .axi-badge-group { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.5rem 0 2rem 0; }
+      .axi-badge { background: var(--accent-bg); border: 1px solid var(--accent-border); border-radius: 8px; padding: 0.8rem 1.2rem; text-align: center; }
+      .axi-badge-value { font-size: 1.3rem; font-weight: 600; color: var(--accent); }
+      .axi-badge-label { font-size: 0.78rem; color: var(--text-secondary); }
+      .axi-eco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+      .axi-eco-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 1rem; }
+      .axi-eco-name { font-weight: 590; color: var(--text-primary); font-size: 0.88rem; }
+      .axi-eco-domain { color: var(--text-muted); font-size: 0.78rem; }
+      .axi-eco-desc { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.25rem; line-height: 1.4; }
+      .axi-tag-official { display: inline-block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: rgba(35,131,226,0.1); color: #1b6fbf; margin-right: 0.35rem; }
+      .axi-tag-community { display: inline-block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: rgba(45,170,120,0.1); color: #2d9a78; margin-right: 0.35rem; }
+      .axi-code { background: #e8e7e4; border: 1px solid rgba(55,53,47,0.12); border-radius: 4px; padding: 1px 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #1a1a18; }
+      .axi-footnote { color: var(--text-muted); font-size: 0.82rem; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+      .axi-footnote a { color: var(--accent); }
+      .axi-benchmark { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+      .axi-benchmark th { text-align: left; font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em; color: var(--text-muted); padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+      .axi-benchmark td { padding: 0.45rem 0.75rem; font-size: 0.85rem; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); }
+      .axi-benchmark tr:last-child td { border-bottom: none; }
+    </style>
+    <style>
+      table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+      th { text-align: left; font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em; color: var(--text-muted); padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+      td { padding: 0.45rem 0.75rem; font-size: 0.85rem; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); }
+      tr:last-child td { border-bottom: none; }
+    </style>
+</head>
+<body>
+    <div class="page-wrap">
+        <main>
+ <div class="content-wrapper"> <style is:global="">
+  .axi-container { max-width: 880px; margin: 0 auto; padding: 2rem 0; }
+  .axi-container h1 { font-size: 2rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.25rem; }
+  .axi-container .subtitle { color: var(--text-secondary); font-size: 0.95rem; margin-bottom: 2rem; }
+  .axi-container .byline { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 2.5rem; }
+  .axi-container .byline a { color: var(--accent); }
+  .axi-container h2 { font-size: 1.35rem; font-weight: 600; color: var(--text-primary); margin-top: 2.5rem; margin-bottom: 1rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--border); }
+  .axi-lead { color: var(--text-secondary); line-height: 1.7; margin-bottom: 2rem; }
+  .axi-section-text { color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+  .axi-category { display: inline-block; font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; padding: 2px 10px; border-radius: 4px; margin-bottom: 1.25rem; }
+  .axi-cat-efficiency { background: rgba(35,131,226,0.1); color: #1b6fbf; }
+  .axi-cat-robustness { background: rgba(45,170,120,0.1); color: #2d9a78; }
+  .axi-cat-discoverability { background: rgba(180,90,200,0.1); color: #8b3fa0; }
+  .axi-principle { margin-bottom: 1.75rem; }
+  .axi-principle h3 { font-size: 1.1rem; font-weight: 590; color: var(--text-primary); margin-bottom: 0.35rem; }
+  .axi-principle-num { color: var(--accent); margin-right: 0.3rem; }
+  .axi-principle p { color: var(--text-secondary); line-height: 1.6; margin-bottom: 0.5rem; }
+  .axi-container pre { background: #f0f0ee; border: 1px solid var(--border); border-radius: 6px; padding: 0.9rem 1rem; font-size: 0.82rem; line-height: 1.5; overflow-x: auto; color: #1a1a18; margin: 0.5rem 0 1rem 0; }
+  .axi-badge-group { display: flex; gap: 1.5rem; flex-wrap: wrap; margin: 1.5rem 0 2rem 0; }
+  .axi-badge { background: var(--accent-bg); border: 1px solid var(--accent-border); border-radius: 8px; padding: 0.8rem 1.2rem; text-align: center; }
+  .axi-badge-value { font-size: 1.3rem; font-weight: 600; color: var(--accent); }
+  .axi-badge-label { font-size: 0.78rem; color: var(--text-secondary); }
+  .axi-eco-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 0.75rem; margin: 1rem 0; }
+  .axi-eco-card { background: var(--bg-surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.7rem 1rem; }
+  .axi-eco-name { font-weight: 590; color: var(--text-primary); font-size: 0.88rem; }
+  .axi-eco-domain { color: var(--text-muted); font-size: 0.78rem; }
+  .axi-eco-desc { color: var(--text-secondary); font-size: 0.82rem; margin-top: 0.25rem; line-height: 1.4; }
+  .axi-tag-official { display: inline-block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: rgba(35,131,226,0.1); color: #1b6fbf; margin-right: 0.35rem; }
+  .axi-tag-community { display: inline-block; font-size: 0.65rem; font-weight: 600; text-transform: uppercase; padding: 1px 6px; border-radius: 3px; background: rgba(45,170,120,0.1); color: #2d9a78; margin-right: 0.35rem; }
+  .axi-benchmark { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+  .axi-benchmark th { text-align: left; font-size: 0.76rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.01em; color: var(--text-muted); padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+  .axi-benchmark td { padding: 0.45rem 0.75rem; font-size: 0.85rem; color: var(--text-primary); border-bottom: 1px solid var(--border-subtle); }
+  .axi-benchmark tr:last-child td { border-bottom: none; }
+  .axi-winner { font-weight: 600; color: #2d9a78; }
+  .axi-footnote { color: var(--text-muted); font-size: 0.82rem; margin-top: 2rem; border-top: 1px solid var(--border); padding-top: 1rem; }
+  .axi-footnote a { color: var(--accent); }
+  .axi-code { background: #e8e7e4; border: 1px solid rgba(55,53,47,0.12); border-radius: 4px; padding: 1px 5px; font-family: 'JetBrains Mono', monospace; font-size: 0.82rem; color: #1a1a18; }
+</style>
+<div class="axi-container">
+<h1 id="axi-agent-experience-interface">AXI: Agent eXperience Interface</h1>
+<p class="subtitle">10 design principles for agent-ergonomic CLI — validated across 915 runs</p>
+<p class="byline">By <a href="https://axi.md">Kun Chenguid</a> · Published at <a href="https://axi.md">axi.md</a> · Referenced from Donald's adopted guidelines</p>
+<div class="axi-badge-group">
+  <div class="axi-badge"><div class="axi-badge-value">915</div><div class="axi-badge-label">Benchmark Runs</div></div>
+  <div class="axi-badge"><div class="axi-badge-value">$0.074</div><div class="axi-badge-label">AXI Avg Cost/Task</div></div>
+  <div class="axi-badge"><div class="axi-badge-value">21.5s</div><div class="axi-badge-label">AXI Avg Duration</div></div>
+  <div class="axi-badge"><div class="axi-badge-value">$0.100</div><div class="axi-badge-label">MCP Avg Cost/Task</div></div>
+</div>
+<p class="axi-lead">Neither CLI nor MCP gives agents enough love. CLI separates action and observation (doubling tool calls). MCP inflates schemas (185K tokens/task vs 79K for AXI). AXI is the middle path — MCP's reliability at CLI's cost profile. The 10 principles below treat <strong>token budget as a first-class constraint</strong>.</p>
+<p><span class="axi-category axi-cat-efficiency">Efficiency</span></p>
+<div class="axi-principle">
+  <h3>1. Token-efficient output</h3>
+  <p>Use <strong>TOON</strong> (Token-Optimized Object Notation) format instead of JSON or tab-separated tables. TOON omits braces, quotes, and commas, yielding ~40% token savings over equivalent JSON while remaining unambiguous to LLMs.</p>
+</div>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span># Conventional (JSON)</span></span>
+<span class="line"><span>[{"number":42,"title":"Fix login bug","state":"open"},</span></span>
+<span class="line"><span> {"number":43,"title":"Add dark mode","state":"open"}]</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># AXI (TOON)</span></span>
+<span class="line"><span>issues[2]{number,title,state}:</span></span>
+<span class="line"><span>42,Fix login bug,open</span></span>
+<span class="line"><span>43,Add dark mode,open</span></span></code></pre>
+<div class="axi-principle">
+  <h3>2. Minimal default schemas</h3>
+  <p>Return 3-4 fields per list item by default, not 10+. Agents rarely need all available fields and can request additional ones explicitly via a <span class="axi-code">--fields</span> flag.</p>
+</div>
+<div class="axi-principle">
+  <h3>3. Content truncation</h3>
+  <p>Truncate large text fields to a configurable limit, appending a size hint such as <span class="axi-code">(truncated, 2847 chars total — use --full to see complete body)</span>. This prevents a single verbose response from consuming the agent's context budget while preserving enough content for most tasks.</p>
+</div>
+<p><span class="axi-category axi-cat-robustness">Robustness</span></p>
+<div class="axi-principle">
+  <h3>4. Pre-computed aggregates</h3>
+  <p>Include aggregate or derived fields that eliminate round trips. The most impactful example is <span class="axi-code">totalCount</span>: always report the total number of items, not just the page size. Other examples include computed CI status summaries inline in PR views.</p>
+</div>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span># Conventional: no total count</span></span>
+<span class="line"><span>$ gh label list</span></span>
+<span class="line"><span>bug    Something isn't working    #d73a4a</span></span>
+<span class="line"><span>docs   Improvements or additions  #0075ca</span></span>
+<span class="line"><span>... (30 rows — default page, no total)</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># AXI: total count + CI pre-computed</span></span>
+<span class="line"><span>$ gh-axi label list</span></span>
+<span class="line"><span>count: 126</span></span>
+<span class="line"><span>labels[126]{name}:</span></span>
+<span class="line"><span>bug</span></span>
+<span class="line"><span>docs</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span>$ gh-axi pr view 51772</span></span>
+<span class="line"><span>pull_request:</span></span>
+<span class="line"><span>title: "refactor(plugins): route..."</span></span>
+<span class="line"><span>state: merged</span></span>
+<span class="line"><span>checks: "27 passed, 0 failed, 10 skipped"</span></span></code></pre>
+<div class="axi-principle">
+  <h3>5. Definitive empty states</h3>
+  <p>When a query returns no results, output an explicit zero-result message rather than empty output. Agents cannot distinguish "no output" from "command failed silently" without this signal.</p>
+</div>
+<div class="axi-principle">
+  <h3>6. Structured errors &#x26; exit codes</h3>
+  <p>Mutations should be idempotent, errors should be structured and written to stdout (not stderr), and commands must never prompt for interactive input. Reserve stdout for structured data and stderr for debug/log output. Use clean exit codes: 0 for success, 1 for errors.</p>
+</div>
+<p><span class="axi-category axi-cat-discoverability">Discoverability</span></p>
+<div class="axi-principle">
+  <h3>7. Ambient context</h3>
+  <p>Install into the agent's session hooks or plugin system from an explicit setup command so that every conversation starts with relevant state already visible — before the agent takes any action. The integration provides a compact, directory-scoped dashboard as initial context.</p>
+</div>
+<div class="axi-principle">
+  <h3>8. Content first</h3>
+  <p>Running a command with no arguments should display live, actionable data rather than help text. The home view should also include the current executable path, with the home-directory prefix rendered as <span class="axi-code">~</span>, and a one-sentence description of what the AXI does.</p>
+</div>
+<pre class="astro-code github-light" style="background-color:#fff;color:#24292e; overflow-x: auto;" tabindex="0" data-language="plaintext"><code><span class="line"><span># Conventional: no-args shows help</span></span>
+<span class="line"><span>$ gh issue</span></span>
+<span class="line"><span>Work with GitHub issues.</span></span>
+<span class="line"><span>USAGE</span></span>
+<span class="line"><span>gh issue &#x3C;command> [flags]</span></span>
+<span class="line"><span>AVAILABLE COMMANDS</span></span>
+<span class="line"><span>close, create, list, view, ...</span></span>
+<span class="line"><span></span></span>
+<span class="line"><span># AXI: no-args shows live state</span></span>
+<span class="line"><span>$ gh-axi issue</span></span>
+<span class="line"><span>bin: ~/.local/bin/gh-axi</span></span>
+<span class="line"><span>description: Browse and manage GitHub issues for the current repository</span></span>
+<span class="line"><span>count: 14 of 8771 total</span></span>
+<span class="line"><span>issues[14]{number,title,state}:</span></span>
+<span class="line"><span>51815,"[Bug]: Telegram plugin...",open</span></span>
+<span class="line"><span>...</span></span>
+<span class="line"><span>help[2]:</span></span>
+<span class="line"><span>  Run `gh-axi issue view &#x3C;number>`</span></span>
+<span class="line"><span>  Run `gh-axi issue create --title "..."`</span></span></code></pre>
+<div class="axi-principle">
+  <h3>9. Contextual disclosure</h3>
+  <p>Append <span class="axi-code">help[]</span> lines after output, suggesting logical next steps as concrete command templates. Carry forward fixed disambiguating flags, but leave runtime values parameterized as placeholders like <span class="axi-code">&#x3C;id></span> instead of guessing them.</p>
+</div>
+<div class="axi-principle">
+  <h3>10. Consistent way to get help</h3>
+  <p>Each subcommand should offer a concise <span class="axi-code">--help</span> flag as a fallback when contextual hints are insufficient.</p>
+</div>
+<h2 id="benchmark-results">Benchmark Results</h2>
+<p class="axi-section-text">490 browser automation runs + 425 GitHub API runs comparing 7 interface conditions:</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<table><thead><tr><th>Condition</th><th>Interface</th><th>Avg Cost/Task</th><th>Avg Duration</th></tr></thead><tbody><tr><td><strong>chrome-devtools-axi</strong></td><td>Bash CLI (AXI)</td><td><strong>$0.074</strong></td><td><strong>21.5s</strong></td></tr><tr><td>dev-browser</td><td>Bash CLI</td><td>$0.078</td><td>28.6s</td></tr><tr><td>agent-browser</td><td>Bash CLI (Rust)</td><td>$0.088</td><td>24.6s</td></tr><tr><td>chrome-devtools-mcp-compressed</td><td>MCP (compressed)</td><td>$0.091</td><td>29.7s</td></tr><tr><td>chrome-devtools-mcp-search</td><td>MCP + ToolSearch</td><td>$0.096</td><td>29.4s</td></tr><tr><td>chrome-devtools-mcp</td><td>MCP (all tools)</td><td>$0.100</td><td>26.0s</td></tr><tr><td>chrome-devtools-mcp-code</td><td>MCP + Code Mode</td><td>$0.120</td><td>36.2s</td></tr></tbody></table>
+<h2 id="ecosystem">Ecosystem</h2>
+<p class="axi-section-text">Reference implementations and community-built AXIs in the wild:</p>
+<div class="axi-eco-grid">
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-official">Official</span><span class="axi-eco-name">gh-axi</span></div>
+    <div class="axi-eco-domain">GitHub</div>
+    <div class="axi-eco-desc">Issues, PRs, workflow runs, releases. Wraps the official gh CLI.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-official">Official</span><span class="axi-eco-name">chrome-devtools-axi</span></div>
+    <div class="axi-eco-domain">Browser Automation</div>
+    <div class="axi-eco-desc">Navigate, click, fill, extract with combined operations.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-official">Official</span><span class="axi-eco-name">lavish-axi</span></div>
+    <div class="axi-eco-domain">Human Review</div>
+    <div class="axi-eco-desc">Annotate, comment, send feedback on agent-generated HTML artifacts.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">npm-axi</span></div>
+    <div class="axi-eco-domain">npm — SSBrouhard</div>
+    <div class="axi-eco-desc">Search and inspect npm registry packages with TOON output.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">sqlite-axi</span></div>
+    <div class="axi-eco-domain">SQLite — SSBrouhard</div>
+    <div class="axi-eco-desc">Inspect schemas, sample rows, run capped read-only SQLite queries.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">slack-axi</span></div>
+    <div class="axi-eco-domain">Slack — Jarvus Innovations</div>
+    <div class="axi-eco-desc">Read, search, sweep, safely draft Slack messages.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">gws-axi</span></div>
+    <div class="axi-eco-domain">Google Workspace — Jarvus Innovations</div>
+    <div class="axi-eco-desc">Gmail, Calendar, Docs, Drive, Slides — drafts mail, never sends.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">harvest-axi</span></div>
+    <div class="axi-eco-domain">Time Tracking — Jarvus Innovations</div>
+    <div class="axi-eco-desc">Review, log, edit Harvest time entries by period.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">otter-axi</span></div>
+    <div class="axi-eco-domain">Meetings — Jarvus Innovations</div>
+    <div class="axi-eco-desc">Find and pull Otter.ai meeting transcripts from the shell.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">metabase-axi</span></div>
+    <div class="axi-eco-domain">Analytics/BI — Jarvus Innovations</div>
+    <div class="axi-eco-desc">Query, explore, and export from Metabase over the shell.</div>
+  </div>
+  <div class="axi-eco-card">
+    <div><span class="axi-tag-community">Community</span><span class="axi-eco-name">gitsheets-axi</span></div>
+    <div class="axi-eco-domain">Git-backed Data — Jarvus Innovations</div>
+    <div class="axi-eco-desc">Read and mutate git-backed record sheets — TOON output, idempotent commits.</div>
+  </div>
+</div>
+<h2>Kun's AGENTS.md / CLAUDE.md Guidelines</h2>
+<p class="axi-section-text">The companion rule set that pairs with the AXI principles — adopted as rules #1-8 (AXI covers #9-18). These govern engineering workflow, code quality, and communication standards.</p>
+<h3>General Guidelines</h3>
+<div class="axi-principle">
+  <p><strong>1. Plain dash over em dash —</strong> Never use the em dash "—". Use plain dash "-" instead.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>2. No co-author in commits —</strong> When writing commit messages, NEVER auto-add your agent name as co-author.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>3. Don't touch auto-generated files —</strong> Never manually modify CHANGELOG.md files or any files that are marked as auto-generated.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>4. One sentence per line for long Markdown —</strong> When writing or substantially editing long Markdown files, put each full sentence on its own line. Preserve normal Markdown structure, but avoid wrapping multiple sentences onto one physical line.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>5. Quality over cost in decisions —</strong> When making technical decisions, do not give much weight to development cost. Instead, prefer quality, simplicity, robustness, scalability, and long term maintainability.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>6. Reproduce E2E before fixing bugs —</strong> When doing bug fixes, always start with reproducing the bug in an E2E setting as closely aligned with how an end user would. This makes sure you find the real problem so your fix will actually solve it.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>7. Pixel-perfect UI —</strong> When end-to-end testing a product, be picky about the UI you see and obsessed with pixel perfection. If something clearly looks off, even if it is not directly related to what you are doing, try to get it fixed along the way.</p>
+</div>
+<div class="axi-principle">
+  <p><strong>8. Fix lint, test failures, and flakiness on sight —</strong> Apply that same high standard to engineering excellence: lint, test failures, and test flakiness. If you see one, even if it is not caused by what you are working on right now, still get it fixed.</p>
+</div>
+<h3>Kun's Opinions</h3>
+<p>When you are working on something that would benefit from being informed by Kun's viewpoints, read <span class="axi-code">~/OPINIONS.md</span> to understand his positions on engineering, product, and design trade-offs.</p>
+<h3>Voice Profile</h3>
+<p>When you are talking/posting on behalf of Kun using his identity, read <span class="axi-code">~/VOICE.md</span> to see how Kun talks — his tone, phrasing, and communication style.</p>
+<div class="axi-footnote">
+  <p>Source: <a href="https://axi.md">axi.md</a> by Kun Chenguid. These 10 AXI principles (rules #9-18) + 8 engineering guidelines (rules #1-8) have been adopted as Donald's personal output and workflow standards for Hermes Agent interactions. Run <span class="axi-code">npx -y gh-axi</span> for GitHub operations or <span class="axi-code">npx -y chrome-devtools-axi</span> for browser automation.</p>
+</div>
+</div> </div>         </main>
+        <footer>
+            <p><a href="https://axi.md">AXI</a> · 10 design principles for agent-ergonomic CLI · validated across 915 runs</p>
+        </footer>
+    </div>
+</body>
+</html>
